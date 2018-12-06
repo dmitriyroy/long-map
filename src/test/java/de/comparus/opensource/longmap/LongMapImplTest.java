@@ -71,8 +71,8 @@ public class LongMapImplTest<V> {
         assertEquals(0,longMap.getIndexNew(arr,0));
         assertEquals(1,longMap.getIndexNew(arr,2));
         assertEquals(1,longMap.getIndexNew(arr,4));
-        assertEquals(1,longMap.getIndexNew(arr,7));
-        assertEquals(1,longMap.getIndexNew(arr,Long.MAX_VALUE));
+        assertEquals(2,longMap.getIndexNew(arr,7));
+        assertEquals(2,longMap.getIndexNew(arr,Long.MAX_VALUE));
     }
 
     @Test
