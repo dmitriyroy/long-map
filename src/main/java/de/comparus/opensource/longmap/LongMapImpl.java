@@ -1,11 +1,8 @@
 package de.comparus.opensource.longmap;
 
-import sun.invoke.empty.Empty;
-
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 public class LongMapImpl<V> implements LongMap<V> {
 
@@ -22,17 +19,17 @@ public class LongMapImpl<V> implements LongMap<V> {
         values = new Object[mapSize];
     }
 
-    public LongMapImpl(int initialSize) {
-        if(initialSize > 0){
-            keys = new long[initialSize];
-            values = new Object[initialSize];
-            mapSize = initialSize;
-        }else{
-            keys = new long[0];
-            values = new Object[0];
-            mapSize = 0;
-        }
-    }
+//    public LongMapImpl(int initialSize) {
+//        if(initialSize > 0){
+//            keys = new long[initialSize];
+//            values = new Object[initialSize];
+//            mapSize = initialSize;
+//        }else{
+//            keys = new long[0];
+//            values = new Object[0];
+//            mapSize = 0;
+//        }
+//    }
 
     @Override
     public V put(long key, V value) {
@@ -41,19 +38,23 @@ public class LongMapImpl<V> implements LongMap<V> {
             return (V) values[getIndex(keys,key)];
         }
         keySet.add(key);
-        int newIndex = getIndexNew(keys,key);
+        valueSet.add(value);
+        int i = getIndexNew(keys,key);
         long[] keysNew = new long[mapSize+1];
         Object[] valuesNew = new Object[mapSize+1];
-        System.arraycopy(keys,0,keysNew,0,newIndex);
-        System.arraycopy(keys,newIndex+1,keysNew,newIndex+1,mapSize-newIndex);
-        System.arraycopy(values,0,valuesNew,0,newIndex);
-        System.arraycopy(values,newIndex+1,values,newIndex+1,mapSize-newIndex);
-        keysNew[newIndex] = key;
-        valuesNew[newIndex] = value;
+        System.arraycopy(keys,0,keysNew,0, i);
+        System.arraycopy(values,0,valuesNew,0,i);
+        if((i) < mapSize) {
+            System.arraycopy(keys, i, keysNew, i+1, mapSize - i);
+            System.arraycopy(values, i, valuesNew, i+1, mapSize - i);
+        }
+        keysNew[i] = key;
+        valuesNew[i] = value;
         keys = keysNew;
         values = valuesNew;
         mapSize++;
-        return (V)values[newIndex];
+
+        return (V)values[i];
     }
 
     @Override
@@ -62,13 +63,32 @@ public class LongMapImpl<V> implements LongMap<V> {
         return (V) values[getIndex(keys, key)];
     }
 
+    @Override
+    public V remove(long key) {
+        if(!keySet.contains(key)) return null;
+        int i = getIndex(keys, key);
+        V v = (V) values[i];
+
+        long[] keysNew = new long[mapSize-1];
+        Object[] valuesNew = new Object[mapSize-1];
+        System.arraycopy(keys,0,keysNew,0,i);
+        System.arraycopy(keys,i+1,keysNew,i,mapSize-i-1);
+        System.arraycopy(values,0,valuesNew,0,i);
+        System.arraycopy(values,i+1,valuesNew,i,mapSize-i-1);
+        keys = keysNew;
+        values = valuesNew;
+        mapSize--;
+
+        return v;
+    }
+
     public int getIndexNew(long[] arr, long value){
-        if(mapSize == 0) return 0;
+        if(arr.length == 0) return 0;
         int index = 0;
         int i = 0;
         int from = 0;
-        int to = mapSize - 1;
-        if(mapSize == 1){
+        int to = arr.length - 1;
+        if(arr.length == 1){
             if(arr[0] < value ){
                 index = 1;
             }
@@ -78,8 +98,8 @@ public class LongMapImpl<V> implements LongMap<V> {
         i = (to - from)/2;
         while(true){
             if(arr[i] < value){
-                if(i >= mapSize - 1){
-                    index = mapSize;
+                if(i >= arr.length - 1){
+                    index = arr.length;
                     break;
                 }
                 if(arr[i+1] > value){
@@ -108,7 +128,7 @@ public class LongMapImpl<V> implements LongMap<V> {
         int index = 0;
         int i = 0;
         int from = 0;
-        int to = mapSize - 1;
+        int to = arr.length - 1;
         i = (to - from)/2;
         while(true){
             if(arr[i] == value){
@@ -123,14 +143,6 @@ public class LongMapImpl<V> implements LongMap<V> {
             i = (from + to) / 2;
         }
         return index;
-    }
-
-    @Override
-    public V remove(long key) {
-        if(!keySet.contains(key)) return null;
-//        keySet.
-
-        return null;
     }
 
     @Override
@@ -172,5 +184,14 @@ public class LongMapImpl<V> implements LongMap<V> {
         valueSet = new HashSet<>();
     }
 
-
+    @Override
+    public String toString() {
+        return "LongMapImpl{" +
+                "keySet=" + keySet +
+                ", valueSet=" + valueSet +
+                ", keys=" + Arrays.toString(keys) +
+                ", values=" + Arrays.toString(values) +
+                ", mapSize=" + mapSize +
+                '}';
+    }
 }
