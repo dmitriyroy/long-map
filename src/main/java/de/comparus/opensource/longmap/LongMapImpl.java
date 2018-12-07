@@ -19,18 +19,6 @@ public class LongMapImpl<V> implements LongMap<V> {
         values = new Object[mapSize];
     }
 
-//    public LongMapImpl(int initialSize) {
-//        if(initialSize > 0){
-//            keys = new long[initialSize];
-//            values = new Object[initialSize];
-//            mapSize = initialSize;
-//        }else{
-//            keys = new long[0];
-//            values = new Object[0];
-//            mapSize = 0;
-//        }
-//    }
-
     @Override
     public V put(long key, V value) {
         if(keySet.contains(key)){
@@ -80,6 +68,45 @@ public class LongMapImpl<V> implements LongMap<V> {
         mapSize--;
 
         return v;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return mapSize == 0 ? true : false;
+    }
+
+    @Override
+    public boolean containsKey(long key) {
+        return keySet.contains(key) ? true : false;
+    }
+
+    @Override
+    public boolean containsValue(V value) {
+        return valueSet.contains(value) ? true : false;
+    }
+
+    @Override
+    public long[] keys() {
+        return keys;
+    }
+
+    @Override
+    public V[] values() {
+        return (V[]) values;
+    }
+
+    @Override
+    public long size() {
+        return mapSize;
+    }
+
+    @Override
+    public void clear() {
+        mapSize = 0;
+        keys = new long[0];
+        values = new Object[0];
+        keySet = new HashSet<>();
+        valueSet = new HashSet<>();
     }
 
     public int getIndexNew(long[] arr, long value){
@@ -143,45 +170,6 @@ public class LongMapImpl<V> implements LongMap<V> {
             i = (from + to) / 2;
         }
         return index;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return mapSize == 0 ? true : false;
-    }
-
-    @Override
-    public boolean containsKey(long key) {
-        return keySet.contains(key) ? true : false;
-    }
-
-    @Override
-    public boolean containsValue(V value) {
-        return valueSet.contains(value) ? true : false;
-    }
-
-    @Override
-    public long[] keys() {
-        return keys;
-    }
-
-    @Override
-    public V[] values() {
-        return (V[]) values;
-    }
-
-    @Override
-    public long size() {
-        return mapSize;
-    }
-
-    @Override
-    public void clear() {
-        mapSize = 0;
-        keys = new long[0];
-        values = new Object[0];
-        keySet = new HashSet<>();
-        valueSet = new HashSet<>();
     }
 
     @Override
