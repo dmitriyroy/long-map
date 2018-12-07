@@ -9,14 +9,11 @@ public class LongMapImpl<V> implements LongMap<V> {
     private Set<Long> keySet = new HashSet<>();
     private Set<V> valueSet = new HashSet<>();
 
-    private long[] keys;
-    private Object[] values;
-    private int mapSize;
+    private long[] keys = new long[0];;
+    private Object[] values = new Object[0];
+    private int mapSize = 0;
 
     public LongMapImpl() {
-        mapSize = 0;
-        keys = new long[mapSize];
-        values = new Object[mapSize];
     }
 
     @Override
